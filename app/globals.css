@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* Tema "livro-caixa": papel de ledger contábil + visor de calculadora antiga */
+:root {
+  --paper: #ede7d3;
+  --paper-card: #f8f4e7;
+  --ink: #22271f;
+  --ink-soft: #5b6355;
+  --line: #c3cdb4;
+  --brand: #1e6b4e;
+  --brand-dark: #123b2c;
+  --accent: #7a2331;
+  --lcd-bg: #0d1b12;
+  --lcd-bezel: #22392a;
+  --lcd-fg: #57ffa6;
+  --lcd-fg-dim: #2e6b4c;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-card: var(--paper-card);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-accent: var(--accent);
+  --color-lcd-bg: var(--lcd-bg);
+  --color-lcd-bezel: var(--lcd-bezel);
+  --color-lcd-fg: var(--lcd-fg);
+  --color-lcd-fg-dim: var(--lcd-fg-dim);
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+/* Fundo com pauta de papel de contabilidade (linhas horizontais bem sutis) */
+.ledger-bg {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(30, 107, 78, 0.16) 0px,
+    rgba(30, 107, 78, 0.16) 1px,
+    transparent 1px,
+    transparent 32px
+  );
+}
+
+/* Painel estilo visor de calculadora/LED antiga */
+.lcd-panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--lcd-bg);
+  border: 1px solid var(--lcd-bezel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.lcd-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.035) 0px,
+    rgba(255, 255, 255, 0.035) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+.lcd-digits {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--lcd-fg);
+  text-shadow:
+    0 0 6px rgba(87, 255, 166, 0.65),
+    0 0 16px rgba(87, 255, 166, 0.25);
+  transition: color 0.3s ease;
+}
+
+.lcd-digits[data-idle="true"] {
+  color: var(--lcd-fg-dim);
+  text-shadow: none;
+}
+
+@keyframes lcd-flicker {
+  0% { opacity: 0.35; }
+  20% { opacity: 1; }
+  38% { opacity: 0.45; }
+  60% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+.lcd-digits.is-updating {
+  animation: lcd-flicker 420ms steps(2, end);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lcd-digits.is-updating {
+    animation: none;
+  }
+}
+
+/* Foco visível para acessibilidade de teclado */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
